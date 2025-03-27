@@ -17,6 +17,13 @@ export interface Farmer {
   organic?: boolean;
   specialty?: string[];
   featured?: boolean;
+  // Add missing properties
+  description?: string;
+  years_farming?: number;
+  farm_size?: string;
+  certification?: string[];
+  contact_phone?: string;
+  contact_email?: string;
 }
 
 interface FarmerCardProps {
