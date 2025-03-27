@@ -1,5 +1,5 @@
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Search, SlidersHorizontal, MapPin, X, Leaf } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -11,38 +11,74 @@ import {
   SelectTrigger,
   SelectValue
 } from '@/components/ui/select';
+import { useToast } from '@/components/ui/use-toast';
 import NavBar from '@/components/NavBar';
 import Footer from '@/components/Footer';
 import FarmerCard, { Farmer } from '@/components/FarmerCard';
-import { mockFarmers } from '@/data/mockData';
+import { supabase } from '@/integrations/supabase/client';
 
 const locations = [
   "All Locations",
-  "Boulder, CO",
-  "Santa Barbara, CA", 
-  "Eugene, OR",
-  "Sebastopol, CA",
-  "Portland, OR"
+  "Gujarat",
+  "Punjab", 
+  "Andhra Pradesh",
+  "Rajasthan"
 ];
 
 const specialties = [
   "All",
+  "Wheat",
+  "Rice",
+  "Cotton",
+  "Millet",
   "Vegetables",
-  "Fruits",
-  "Herbs",
-  "Eggs",
-  "Dairy",
-  "Meat"
+  "Lentils",
+  "Chillies",
+  "Turmeric",
+  "Mustard"
 ];
 
 const Farmers = () => {
-  const [farmers, setFarmers] = useState<Farmer[]>(mockFarmers);
-  const [filteredFarmers, setFilteredFarmers] = useState<Farmer[]>(mockFarmers);
+  const { toast } = useToast();
+  const [farmers, setFarmers] = useState<Farmer[]>([]);
+  const [filteredFarmers, setFilteredFarmers] = useState<Farmer[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedLocation, setSelectedLocation] = useState("All Locations");
   const [selectedSpecialty, setSelectedSpecialty] = useState("All");
   const [isOrganic, setIsOrganic] = useState(false);
   const [sortBy, setSortBy] = useState("featured");
+  
+  useEffect(() => {
+    const fetchFarmers = async () => {
+      try {
+        setIsLoading(true);
+        const { data, error } = await supabase
+          .from('farmers')
+          .select('*');
+          
+        if (error) {
+          throw error;
+        }
+        
+        if (data) {
+          setFarmers(data);
+          setFilteredFarmers(data);
+        }
+      } catch (error) {
+        console.error('Error fetching farmers:', error);
+        toast({
+          title: "Error",
+          description: "Failed to load farmers data. Please try again later.",
+          variant: "destructive",
+        });
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    
+    fetchFarmers();
+  }, [toast]);
   
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -124,8 +160,8 @@ const Farmers = () => {
           <div className="container mx-auto px-4 max-w-7xl">
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
               <div>
-                <h1 className="text-3xl font-bold mb-2">Meet Our Farmers</h1>
-                <p className="text-muted-foreground">Find and connect with local farmers in your area</p>
+                <h1 className="text-3xl font-bold mb-2">Meet Our Kisan Farmers</h1>
+                <p className="text-muted-foreground">Find and connect with local farmers across India</p>
               </div>
             </div>
           </div>
@@ -275,7 +311,20 @@ const Farmers = () => {
                 </div>
               </div>
               
-              {filteredFarmers.length === 0 ? (
+              {isLoading ? (
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                  {[1, 2, 3, 4].map((item) => (
+                    <div key={item} className="border border-border rounded-lg overflow-hidden">
+                      <div className="h-48 bg-muted animate-pulse" />
+                      <div className="p-4 space-y-3">
+                        <div className="h-4 bg-muted animate-pulse rounded" />
+                        <div className="h-4 w-2/3 bg-muted animate-pulse rounded" />
+                        <div className="h-8 bg-muted animate-pulse rounded mt-4" />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : filteredFarmers.length === 0 ? (
                 <div className="text-center py-12">
                   <div className="text-muted-foreground mb-4">
                     <SlidersHorizontal size={40} className="mx-auto mb-4" />
