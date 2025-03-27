@@ -1,5 +1,6 @@
 
 import { useState, useEffect } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { Filter, SlidersHorizontal, Search, ChevronDown, Leaf, Circle, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -33,6 +34,8 @@ const categories = [
 ];
 
 const Marketplace = () => {
+  const location = useLocation();
+  const navigate = useNavigate();
   const [products, setProducts] = useState<Product[]>(mockProducts);
   const [filteredProducts, setFilteredProducts] = useState<Product[]>(mockProducts);
   const [selectedCategory, setSelectedCategory] = useState("All");
@@ -40,6 +43,15 @@ const Marketplace = () => {
   const [isOrganic, setIsOrganic] = useState(false);
   const [sortBy, setSortBy] = useState("recommended");
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
+  
+  // Extract search query from URL on component mount
+  useEffect(() => {
+    const searchParams = new URLSearchParams(location.search);
+    const query = searchParams.get('search');
+    if (query) {
+      setSearchQuery(query);
+    }
+  }, [location.search]);
   
   useEffect(() => {
     let result = [...products];
@@ -89,6 +101,14 @@ const Marketplace = () => {
     setSearchQuery("");
     setIsOrganic(false);
     setSortBy("recommended");
+    // Clear URL search params
+    navigate('/marketplace');
+  };
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    // Update URL with search query
+    navigate(`/marketplace?search=${encodeURIComponent(searchQuery.trim())}`);
   };
   
   const hasActiveFilters = selectedCategory !== "All" || searchQuery !== "" || isOrganic;

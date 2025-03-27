@@ -1,5 +1,6 @@
 
 import { useState, useEffect } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { Search, SlidersHorizontal, MapPin, X, Leaf } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -40,6 +41,8 @@ const specialties = [
 
 const Farmers = () => {
   const { toast } = useToast();
+  const location = useLocation();
+  const navigate = useNavigate();
   const [farmers, setFarmers] = useState<Farmer[]>([]);
   const [filteredFarmers, setFilteredFarmers] = useState<Farmer[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -48,6 +51,15 @@ const Farmers = () => {
   const [selectedSpecialty, setSelectedSpecialty] = useState("All");
   const [isOrganic, setIsOrganic] = useState(false);
   const [sortBy, setSortBy] = useState("featured");
+  
+  // Extract search query from URL on component mount
+  useEffect(() => {
+    const searchParams = new URLSearchParams(location.search);
+    const query = searchParams.get('search');
+    if (query) {
+      setSearchQuery(query);
+    }
+  }, [location.search]);
   
   useEffect(() => {
     const fetchFarmers = async () => {
@@ -80,10 +92,15 @@ const Farmers = () => {
     fetchFarmers();
   }, [toast]);
   
+  // Apply filters when parameters change
+  useEffect(() => {
+    applyFilters();
+  }, [searchQuery, selectedLocation, selectedSpecialty, isOrganic, sortBy, farmers]);
+  
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
-    
-    applyFilters();
+    // Update URL with search query
+    navigate(`/farmers?search=${encodeURIComponent(searchQuery.trim())}`);
   };
   
   const applyFilters = () => {
@@ -94,7 +111,8 @@ const Farmers = () => {
       const query = searchQuery.toLowerCase();
       result = result.filter(farmer => 
         farmer.name.toLowerCase().includes(query) || 
-        farmer.location.toLowerCase().includes(query)
+        farmer.location.toLowerCase().includes(query) ||
+        (farmer.specialty && farmer.specialty.some(s => s.toLowerCase().includes(query)))
       );
     }
     
@@ -145,7 +163,8 @@ const Farmers = () => {
     setSelectedSpecialty("All");
     setIsOrganic(false);
     setSortBy("featured");
-    setFilteredFarmers(farmers);
+    // Clear URL search params
+    navigate('/farmers');
   };
   
   const hasActiveFilters = searchQuery !== "" || selectedLocation !== "All Locations" || 

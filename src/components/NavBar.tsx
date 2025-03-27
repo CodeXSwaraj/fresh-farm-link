@@ -1,6 +1,6 @@
 
 import { useEffect, useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Menu, X, ShoppingBasket, User, Search, Wheat } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
@@ -10,9 +10,11 @@ import { toast } from 'sonner';
 
 const NavBar = () => {
   const location = useLocation();
+  const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [cartCount, setCartCount] = useState(3); // Default to 3 for demo
+  const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
     const handleScroll = () => {
@@ -31,6 +33,15 @@ const NavBar = () => {
     toast.success('Shopping basket opened', {
       description: 'You have 3 items in your basket',
     });
+  };
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      console.log('Searching for:', searchQuery);
+      navigate(`/marketplace?search=${encodeURIComponent(searchQuery.trim())}`);
+      setIsOpen(false);
+    }
   };
 
   const navLinks = [
@@ -77,14 +88,16 @@ const NavBar = () => {
 
           {/* Search, Cart, Account */}
           <div className="hidden md:flex items-center space-x-4">
-            <div className="relative">
+            <form onSubmit={handleSearch} className="relative">
               <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
               <Input
                 type="search"
                 placeholder="Search products..."
                 className="w-[200px] pl-8 rounded-full bg-muted/50 focus-visible:ring-primary"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
               />
-            </div>
+            </form>
             
             <Button 
               variant="ghost" 
@@ -148,14 +161,16 @@ const NavBar = () => {
                 </Link>
               ))}
               <div className="pt-2 pb-1">
-                <div className="relative">
+                <form onSubmit={handleSearch} className="relative">
                   <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
                   <Input
                     type="search"
                     placeholder="Search products..."
                     className="w-full pl-9"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
                   />
-                </div>
+                </form>
               </div>
               <div className="pt-2">
                 <Button variant="outline" className="w-full justify-start" size="sm">

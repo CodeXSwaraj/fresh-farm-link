@@ -3,10 +3,12 @@ import { useState, useEffect } from 'react';
 import { Search, ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { useNavigate } from 'react-router-dom';
 
 const Hero = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [currentImage, setCurrentImage] = useState(0);
+  const navigate = useNavigate();
   
   const backgroundImages = [
     'https://images.unsplash.com/photo-1582652900294-d6ea373de4ae?q=80&w=2070&auto=format&fit=crop',
@@ -26,8 +28,9 @@ const Hero = () => {
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     if (searchQuery.trim()) {
-      // Redirect to search results (to be implemented)
       console.log('Searching for:', searchQuery);
+      // Redirect to marketplace with search query
+      navigate(`/marketplace?search=${encodeURIComponent(searchQuery.trim())}`);
     }
   };
   
