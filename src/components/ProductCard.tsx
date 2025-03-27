@@ -5,6 +5,9 @@ import { ShoppingCart, Leaf, Heart } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/components/ui/use-toast';
+import { useCart } from '@/contexts/CartContext';
+import { useAuth } from '@/contexts/AuthContext';
+import AuthModal from '@/components/auth/AuthModal';
 
 export interface Product {
   id: string;
@@ -30,17 +33,30 @@ interface ProductCardProps {
 
 const ProductCard = ({ product, layout = 'grid' }: ProductCardProps) => {
   const { toast } = useToast();
+  const { addToCart } = useCart();
+  const { user } = useAuth();
   const [isHovered, setIsHovered] = useState(false);
+  const [isAdding, setIsAdding] = useState(false);
   
-  const handleAddToCart = (e: React.MouseEvent) => {
+  const handleAddToCart = async (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
     
-    toast({
-      title: "Added to cart",
-      description: `${product.name} has been added to your cart.`,
-      duration: 3000,
-    });
+    if (!user) {
+      toast({
+        title: "Sign in required",
+        description: "Please sign in to add items to your cart",
+        duration: 3000,
+      });
+      return;
+    }
+    
+    setIsAdding(true);
+    try {
+      await addToCart(product, 1);
+    } finally {
+      setIsAdding(false);
+    }
   };
   
   const handleWishlist = (e: React.MouseEvent) => {
@@ -118,17 +134,32 @@ const ProductCard = ({ product, layout = 'grid' }: ProductCardProps) => {
             
             <div className="flex justify-between items-center">
               <div className="flex items-end gap-2">
-                <span className="text-lg font-semibold">${discountedPrice}</span>
+                <span className="text-lg font-semibold">₹{discountedPrice}</span>
                 {product.discount && (
-                  <span className="text-sm text-muted-foreground line-through">${product.price.toFixed(2)}</span>
+                  <span className="text-sm text-muted-foreground line-through">₹{product.price.toFixed(2)}</span>
                 )}
                 <span className="text-sm text-muted-foreground">/{product.unit}</span>
               </div>
               
-              <Button onClick={handleAddToCart} className="gap-2">
-                <ShoppingCart size={16} />
-                Add to Cart
-              </Button>
+              {user ? (
+                <Button 
+                  onClick={handleAddToCart} 
+                  className="gap-2"
+                  disabled={isAdding}
+                >
+                  <ShoppingCart size={16} />
+                  {isAdding ? 'Adding...' : 'Add to Cart'}
+                </Button>
+              ) : (
+                <AuthModal
+                  trigger={
+                    <Button className="gap-2">
+                      <ShoppingCart size={16} />
+                      Add to Cart
+                    </Button>
+                  }
+                />
+              )}
             </div>
           </div>
         </div>
@@ -176,14 +207,29 @@ const ProductCard = ({ product, layout = 'grid' }: ProductCardProps) => {
               <Heart size={16} className="text-accent" />
             </Button>
             
-            <Button 
-              variant="outline" 
-              size="icon" 
-              className="bg-white/90 hover:bg-white border-none h-8 w-8"
-              onClick={handleAddToCart}
-            >
-              <ShoppingCart size={16} className="text-primary" />
-            </Button>
+            {user ? (
+              <Button 
+                variant="outline" 
+                size="icon" 
+                className="bg-white/90 hover:bg-white border-none h-8 w-8"
+                onClick={handleAddToCart}
+                disabled={isAdding}
+              >
+                <ShoppingCart size={16} className="text-primary" />
+              </Button>
+            ) : (
+              <AuthModal
+                trigger={
+                  <Button
+                    variant="outline" 
+                    size="icon" 
+                    className="bg-white/90 hover:bg-white border-none h-8 w-8"
+                  >
+                    <ShoppingCart size={16} className="text-primary" />
+                  </Button>
+                }
+              />
+            )}
           </div>
         </div>
         
@@ -199,9 +245,9 @@ const ProductCard = ({ product, layout = 'grid' }: ProductCardProps) => {
           </h3>
           
           <div className="mt-2 flex items-end gap-1">
-            <span className="text-base font-semibold">${discountedPrice}</span>
+            <span className="text-base font-semibold">₹{discountedPrice}</span>
             {product.discount && (
-              <span className="text-xs text-muted-foreground line-through">${product.price.toFixed(2)}</span>
+              <span className="text-xs text-muted-foreground line-through">₹{product.price.toFixed(2)}</span>
             )}
             <span className="text-xs text-muted-foreground">/{product.unit}</span>
           </div>
