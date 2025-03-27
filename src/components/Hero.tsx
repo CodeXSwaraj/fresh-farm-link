@@ -9,9 +9,10 @@ const Hero = () => {
   const [currentImage, setCurrentImage] = useState(0);
   
   const backgroundImages = [
-    'https://images.unsplash.com/photo-1595841696677-6489ff3f8cd1?q=80&w=1470&auto=format&fit=crop',
-    'https://images.unsplash.com/photo-1590682680695-43b964a3ae17?q=80&w=1400&auto=format&fit=crop',
-    'https://images.unsplash.com/photo-1500937386664-56d1dfef3854?q=80&w=1469&auto=format&fit=crop'
+    'https://images.unsplash.com/photo-1582652900294-d6ea373de4ae?q=80&w=2070&auto=format&fit=crop',
+    'https://images.unsplash.com/photo-1551649001-7a2482d98d05?q=80&w=2071&auto=format&fit=crop',
+    'https://images.unsplash.com/photo-1624461074603-1204d20451d8?q=80&w=2069&auto=format&fit=crop',
+    'https://images.unsplash.com/photo-1600353565370-27303ee0c52c?q=80&w=2070&auto=format&fit=crop',
   ];
   
   useEffect(() => {
@@ -47,17 +48,17 @@ const Hero = () => {
         />
       ))}
       
-      {/* Overlay */}
-      <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/50 to-transparent z-0" />
+      {/* Overlay with Indian flag inspired colors */}
+      <div className="absolute inset-0 bg-gradient-to-r from-[#FF9933]/70 via-black/40 to-[#138808]/60 z-0" />
       
       <div className="container mx-auto px-4 max-w-7xl relative z-10">
         <div className="max-w-lg">
           <div className="animate-slide-down">
             <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-4">
-              Fresh From Farm<br />To Your Table
+              भारतीय किसानों से<br />सीधे आपके घर तक
             </h1>
             <p className="text-white/90 text-lg mb-8">
-              Connect directly with local farmers and get the freshest produce delivered to your doorstep. Support sustainable farming and eat healthier.
+              Connect directly with local Indian farmers and get the freshest produce delivered to your doorstep. Support sustainable farming and eat healthier.
             </p>
           </div>
           
@@ -73,13 +74,13 @@ const Hero = () => {
                   onChange={(e) => setSearchQuery(e.target.value)}
                 />
               </div>
-              <Button type="submit" className="rounded-l-none px-6">
+              <Button type="submit" className="rounded-l-none px-6 bg-accent hover:bg-accent/90">
                 Search
               </Button>
             </form>
             
             <div className="flex flex-col sm:flex-row gap-4 mt-6">
-              <Button size="lg" className="px-6">
+              <Button size="lg" className="px-6 bg-accent hover:bg-accent/90">
                 Shop Marketplace
               </Button>
               <Button size="lg" variant="outline" className="bg-white/10 text-white border-white/20 hover:bg-white/20 px-6">

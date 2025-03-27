@@ -1,17 +1,18 @@
 
 import { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Menu, X, ShoppingBasket, User, Search } from 'lucide-react';
+import { Menu, X, ShoppingBasket, User, Search, Wheat } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
+import { toast } from 'sonner';
 
 const NavBar = () => {
   const location = useLocation();
   const [isOpen, setIsOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
-  const [cartCount, setCartCount] = useState(0);
+  const [cartCount, setCartCount] = useState(3); // Default to 3 for demo
 
   useEffect(() => {
     const handleScroll = () => {
@@ -24,6 +25,12 @@ const NavBar = () => {
 
   const toggleMenu = () => {
     setIsOpen(!isOpen);
+  };
+
+  const handleBasketClick = () => {
+    toast.success('Shopping basket opened', {
+      description: 'You have 3 items in your basket',
+    });
   };
 
   const navLinks = [
@@ -46,8 +53,8 @@ const NavBar = () => {
               to="/" 
               className="text-2xl font-bold text-primary flex items-center gap-2 transition-all duration-300 hover:opacity-80"
             >
-              <ShoppingBasket size={28} className="text-primary" />
-              <span className="hidden sm:inline">FreshLink</span>
+              <Wheat size={28} className="text-accent" />
+              <span className="hidden sm:inline">KisanDirect</span>
             </Link>
           </div>
 
@@ -59,8 +66,8 @@ const NavBar = () => {
                 to={link.path}
                 className={`px-4 py-2 rounded-md text-sm font-medium transition-all duration-200 ${
                   location.pathname === link.path
-                    ? 'text-primary'
-                    : 'text-foreground/80 hover:text-primary hover:bg-primary/5'
+                    ? 'text-accent'
+                    : 'text-foreground/80 hover:text-accent hover:bg-accent/5'
                 }`}
               >
                 {link.name}
@@ -79,8 +86,13 @@ const NavBar = () => {
               />
             </div>
             
-            <Button variant="ghost" size="icon" className="relative">
-              <ShoppingBasket className="h-5 w-5" />
+            <Button 
+              variant="ghost" 
+              size="icon" 
+              className="relative" 
+              onClick={handleBasketClick}
+            >
+              <ShoppingBasket className="h-5 w-5 text-accent" />
               {cartCount > 0 && (
                 <Badge variant="accent" className="absolute -top-1 -right-1 w-5 h-5 flex items-center justify-center p-0 text-[10px]">
                   {cartCount}
@@ -97,8 +109,13 @@ const NavBar = () => {
 
           {/* Mobile Menu Button */}
           <div className="flex md:hidden items-center space-x-4">
-            <Button variant="ghost" size="icon" className="relative">
-              <ShoppingBasket className="h-5 w-5" />
+            <Button 
+              variant="ghost" 
+              size="icon" 
+              className="relative" 
+              onClick={handleBasketClick}
+            >
+              <ShoppingBasket className="h-5 w-5 text-accent" />
               {cartCount > 0 && (
                 <Badge variant="accent" className="absolute -top-1 -right-1 w-5 h-5 flex items-center justify-center p-0 text-[10px]">
                   {cartCount}

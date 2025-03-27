@@ -1,5 +1,5 @@
-
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -45,6 +45,11 @@
     --sidebar-accent-foreground: 240 5.9% 10%;
     --sidebar-border: 220 13% 91%;
     --sidebar-ring: 217.2 91.2% 59.8%;
+    
+    /* Indian-themed colors */
+    --indian-saffron: 33 98% 60%;
+    --indian-green: 120 61% 35%;
+    --indian-blue: 226 90% 37%;
   }
 
   .dark {
@@ -84,6 +89,11 @@
     --sidebar-accent-foreground: 240 4.8% 95.9%;
     --sidebar-border: 240 3.7% 15.9%;
     --sidebar-ring: 217.2 91.2% 59.8%;
+    
+    /* Indian-themed colors */
+    --indian-saffron: 33 98% 60%;
+    --indian-green: 120 61% 35%;
+    --indian-blue: 226 90% 37%;
   }
 }
 
@@ -93,12 +103,16 @@
   }
 
   body {
-    @apply bg-background text-foreground font-inter antialiased;
+    @apply bg-background text-foreground font-poppins antialiased;
     font-feature-settings: "ss01" on, "ss02" on, "cv01" on, "cv02" on;
   }
 
   .font-inter {
     font-family: 'Inter', sans-serif;
+  }
+  
+  .font-poppins {
+    font-family: 'Poppins', sans-serif;
   }
 }
 
@@ -159,4 +173,21 @@
 
 .product-card:hover .product-image {
   transform: scale(1.05);
+}
+
+/* Indian-inspired design elements */
+.indian-pattern {
+  background-color: #ffffff;
+  background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23f0821e' fill-opacity='0.1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+}
+
+.indian-border {
+  border-image: linear-gradient(to right, #FF9933, #FFFFFF, #138808);
+  border-image-slice: 1;
+}
+
+/* Add chakra pattern */
+.chakra-pattern {
+  background-color: #ffffff;
+  background-image: url("data:image/svg+xml,%3Csvg width='84' height='84' viewBox='0 0 84 84' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23000000' fill-opacity='0.05'%3E%3Cpath d='M42 42h-10v-10h10v10zm-20 0h-10v-10h10v10zm40 0h-10v-10h10v10zm-20-20h-10v-10h10v10zm-20 0h-10v-10h10v10zm40 0h-10v-10h10v10zm0 40h-10v-10h10v10zm-20 0h-10v-10h10v10zm-20 0h-10v-10h10v10z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
 }
