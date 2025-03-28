@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Filter, SlidersHorizontal, Search, ChevronDown, Leaf, Circle, X } from 'lucide-react';
@@ -44,7 +43,6 @@ const Marketplace = () => {
   const [sortBy, setSortBy] = useState("recommended");
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   
-  // Extract search query from URL on component mount
   useEffect(() => {
     const searchParams = new URLSearchParams(location.search);
     const query = searchParams.get('search');
@@ -56,27 +54,22 @@ const Marketplace = () => {
   useEffect(() => {
     let result = [...products];
     
-    // Filter by category
     if (selectedCategory !== "All") {
       result = result.filter(product => product.category === selectedCategory);
     }
     
-    // Filter by organic
     if (isOrganic) {
       result = result.filter(product => product.organic);
     }
     
-    // Filter by search query
     if (searchQuery) {
       const query = searchQuery.toLowerCase();
       result = result.filter(product => 
         product.name.toLowerCase().includes(query) || 
-        product.category.toLowerCase().includes(query) ||
-        product.farmer.name.toLowerCase().includes(query)
+        product.category.toLowerCase().includes(query)
       );
     }
     
-    // Sort products
     switch (sortBy) {
       case "price-low":
         result.sort((a, b) => a.price - b.price);
@@ -85,11 +78,9 @@ const Marketplace = () => {
         result.sort((a, b) => b.price - a.price);
         break;
       case "newest":
-        // In a real app, would sort by date
         result = [...result];
         break;
       default:
-        // In a real app, would have a recommended sorting algorithm
         result = [...result];
     }
     
@@ -101,13 +92,11 @@ const Marketplace = () => {
     setSearchQuery("");
     setIsOrganic(false);
     setSortBy("recommended");
-    // Clear URL search params
     navigate('/marketplace');
   };
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
-    // Update URL with search query
     navigate(`/marketplace?search=${encodeURIComponent(searchQuery.trim())}`);
   };
   
@@ -232,7 +221,6 @@ const Marketplace = () => {
         
         <div className="container mx-auto px-4 max-w-7xl py-8">
           <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
-            {/* Sidebar filters - desktop only */}
             <div className="hidden lg:block space-y-6">
               <div>
                 <h3 className="font-medium mb-4">Search</h3>
@@ -295,7 +283,6 @@ const Marketplace = () => {
               )}
             </div>
             
-            {/* Main content */}
             <div className="lg:col-span-3">
               <div className="flex flex-wrap items-center justify-between gap-4 mb-6">
                 <div className="flex items-center gap-2">
@@ -346,7 +333,6 @@ const Marketplace = () => {
                 </div>
               </div>
               
-              {/* Mobile search bar */}
               <div className="mb-6 lg:hidden">
                 <div className="relative">
                   <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
