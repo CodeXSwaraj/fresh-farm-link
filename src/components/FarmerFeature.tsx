@@ -6,10 +6,13 @@ import { Button } from '@/components/ui/button';
 import { ShieldCheck, Star, ArrowRight } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { Farmer } from '@/components/FarmerCard';
+import { useAuth } from '@/contexts/AuthContext';
+import AuthModal from '@/components/auth/AuthModal';
 
 const FarmerFeature = () => {
   const [featuredFarmer, setFeaturedFarmer] = useState<Farmer | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const { user } = useAuth();
 
   useEffect(() => {
     const fetchFeaturedFarmer = async () => {
@@ -38,6 +41,31 @@ const FarmerFeature = () => {
     
     fetchFeaturedFarmer();
   }, []);
+
+  // Check if the current user is a farmer
+  const [isFarmer, setIsFarmer] = useState(false);
+  
+  useEffect(() => {
+    const checkIfFarmer = async () => {
+      if (!user) return;
+      
+      try {
+        const { data, error } = await supabase
+          .from('farmers')
+          .select('id')
+          .eq('user_id', user.id)
+          .maybeSingle();
+          
+        if (!error && data) {
+          setIsFarmer(true);
+        }
+      } catch (error) {
+        console.error('Error checking farmer status:', error);
+      }
+    };
+    
+    checkIfFarmer();
+  }, [user]);
 
   return (
     <section className="py-20 bg-gradient-to-b from-muted/0 to-muted/30">
@@ -92,10 +120,31 @@ const FarmerFeature = () => {
             </div>
             
             <div className="flex flex-col sm:flex-row gap-4">
-              <Button size="lg" className="gap-2">
-                Join as a Farmer
-                <ArrowRight size={16} />
-              </Button>
+              {isFarmer ? (
+                <Button size="lg" className="gap-2" asChild>
+                  <Link to="/farmer-dashboard">
+                    Go to Farmer Dashboard
+                    <ArrowRight size={16} />
+                  </Link>
+                </Button>
+              ) : user ? (
+                <Button size="lg" className="gap-2" asChild>
+                  <Link to="/farmer-dashboard">
+                    Register as a Farmer
+                    <ArrowRight size={16} />
+                  </Link>
+                </Button>
+              ) : (
+                <AuthModal 
+                  defaultTab="farmer-signup"
+                  trigger={
+                    <Button size="lg" className="gap-2">
+                      Join as a Farmer
+                      <ArrowRight size={16} />
+                    </Button>
+                  }
+                />
+              )}
               <Button size="lg" variant="outline" asChild>
                 <Link to="/farmers">Meet Our Farmers</Link>
               </Button>

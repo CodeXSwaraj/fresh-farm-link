@@ -11,6 +11,7 @@ import Index from "./pages/Index";
 import Marketplace from "./pages/Marketplace";
 import Farmers from "./pages/Farmers";
 import FarmerProfile from "./pages/FarmerProfile";
+import FarmerDashboard from "./pages/FarmerDashboard";
 import About from "./pages/About";
 import Profile from "./pages/Profile";
 import Orders from "./pages/Orders";
@@ -33,6 +34,7 @@ const App = () => (
               <Route path="/marketplace" element={<Marketplace />} />
               <Route path="/farmers" element={<Farmers />} />
               <Route path="/farmers/:id" element={<FarmerProfile />} />
+              <Route path="/farmer-dashboard" element={<FarmerDashboard />} />
               <Route path="/about" element={<About />} />
               <Route path="/profile" element={<Profile />} />
               <Route path="/orders" element={<Orders />} />

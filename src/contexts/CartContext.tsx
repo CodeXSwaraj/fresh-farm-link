@@ -48,6 +48,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
       const { data, error } = await supabase
         .from('cart_items')
         .select('*')
+        .eq('user_id', user?.id)
         .order('created_at', { ascending: true });
 
       if (error) throw error;

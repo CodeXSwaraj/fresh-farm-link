@@ -60,6 +60,7 @@ export type Database = {
           organic: boolean | null
           rating: number | null
           specialty: string[] | null
+          user_id: string | null
           years_farming: number | null
         }
         Insert: {
@@ -79,6 +80,7 @@ export type Database = {
           organic?: boolean | null
           rating?: number | null
           specialty?: string[] | null
+          user_id?: string | null
           years_farming?: number | null
         }
         Update: {
@@ -98,6 +100,7 @@ export type Database = {
           organic?: boolean | null
           rating?: number | null
           specialty?: string[] | null
+          user_id?: string | null
           years_farming?: number | null
         }
         Relationships: []
@@ -172,6 +175,65 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      products: {
+        Row: {
+          category: string
+          created_at: string | null
+          description: string | null
+          discount: number | null
+          farmer_id: string
+          featured: boolean | null
+          id: string
+          image: string | null
+          inventory: number | null
+          name: string
+          organic: boolean | null
+          price: number
+          unit: string
+          updated_at: string | null
+        }
+        Insert: {
+          category: string
+          created_at?: string | null
+          description?: string | null
+          discount?: number | null
+          farmer_id: string
+          featured?: boolean | null
+          id?: string
+          image?: string | null
+          inventory?: number | null
+          name: string
+          organic?: boolean | null
+          price: number
+          unit: string
+          updated_at?: string | null
+        }
+        Update: {
+          category?: string
+          created_at?: string | null
+          description?: string | null
+          discount?: number | null
+          farmer_id?: string
+          featured?: boolean | null
+          id?: string
+          image?: string | null
+          inventory?: number | null
+          name?: string
+          organic?: boolean | null
+          price?: number
+          unit?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "products_farmer_id_fkey"
+            columns: ["farmer_id"]
+            isOneToOne: false
+            referencedRelation: "farmers"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       profiles: {
         Row: {

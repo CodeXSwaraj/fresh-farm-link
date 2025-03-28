@@ -16,14 +16,12 @@ export interface Product {
   unit: string;
   image: string;
   category: string;
-  farmer: {
-    id: string;
-    name: string;
-    location: string;
-  };
+  farmer_id?: string;
   organic: boolean;
   featured?: boolean;
   discount?: number;
+  inventory?: number;
+  description?: string;
 }
 
 interface ProductCardProps {
@@ -46,6 +44,15 @@ const ProductCard = ({ product, layout = 'grid' }: ProductCardProps) => {
       toast({
         title: "Sign in required",
         description: "Please sign in to add items to your cart",
+        duration: 3000,
+      });
+      return;
+    }
+
+    if (product.inventory !== undefined && product.inventory <= 0) {
+      toast({
+        title: "Out of stock",
+        description: "This product is currently out of stock",
         duration: 3000,
       });
       return;
@@ -98,6 +105,11 @@ const ProductCard = ({ product, layout = 'grid' }: ProductCardProps) => {
                 Organic
               </Badge>
             )}
+            {product.inventory !== undefined && product.inventory <= 0 && (
+              <div className="absolute inset-0 bg-black/60 flex items-center justify-center">
+                <Badge variant="destructive" className="text-lg py-1 px-3">Out of Stock</Badge>
+              </div>
+            )}
           </div>
           
           <div className="p-4 sm:p-6 flex flex-col flex-grow justify-between sm:w-2/3">
@@ -121,14 +133,12 @@ const ProductCard = ({ product, layout = 'grid' }: ProductCardProps) => {
               
               <div className="mt-2 mb-4">
                 <p className="text-sm">
-                  By <span className="text-primary font-medium">{product.farmer.name}</span> 
-                  <span className="mx-1">•</span> 
-                  <span className="text-muted-foreground">{product.farmer.location}</span>
+                  {/* Display farmer info if available */}
                 </p>
               </div>
               
               <p className="text-muted-foreground mb-6 line-clamp-2">
-                Fresh {product.name.toLowerCase()} harvested daily from our sustainable farm. Perfect for healthy meals and cooking.
+                {product.description || `Fresh ${product.name.toLowerCase()} available for healthy meals and cooking.`}
               </p>
             </div>
             
@@ -145,7 +155,7 @@ const ProductCard = ({ product, layout = 'grid' }: ProductCardProps) => {
                 <Button 
                   onClick={handleAddToCart} 
                   className="gap-2"
-                  disabled={isAdding}
+                  disabled={isAdding || (product.inventory !== undefined && product.inventory <= 0)}
                 >
                   <ShoppingCart size={16} />
                   {isAdding ? 'Adding...' : 'Add to Cart'}
@@ -196,6 +206,12 @@ const ProductCard = ({ product, layout = 'grid' }: ProductCardProps) => {
               Organic
             </Badge>
           )}
+
+          {product.inventory !== undefined && product.inventory <= 0 && (
+            <div className="absolute inset-0 bg-black/60 flex items-center justify-center">
+              <Badge variant="destructive" className="text-lg py-1 px-3">Out of Stock</Badge>
+            </div>
+          )}
           
           <div className={`absolute bottom-0 left-0 right-0 p-2 flex justify-between transition-all duration-300 ${isHovered ? 'opacity-100' : 'opacity-0'}`}>
             <Button 
@@ -213,7 +229,7 @@ const ProductCard = ({ product, layout = 'grid' }: ProductCardProps) => {
                 size="icon" 
                 className="bg-white/90 hover:bg-white border-none h-8 w-8"
                 onClick={handleAddToCart}
-                disabled={isAdding}
+                disabled={isAdding || (product.inventory !== undefined && product.inventory <= 0)}
               >
                 <ShoppingCart size={16} className="text-primary" />
               </Button>
@@ -236,7 +252,7 @@ const ProductCard = ({ product, layout = 'grid' }: ProductCardProps) => {
         <div className="p-4">
           <div className="flex items-center justify-between mb-2">
             <p className="text-xs text-muted-foreground">
-              {product.farmer.name} • {product.category}
+              {product.category}
             </p>
           </div>
           
